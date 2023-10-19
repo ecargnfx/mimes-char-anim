@@ -1,7 +1,72 @@
 <script lang="ts">
-  import { T } from '@threlte/core'
-  import { ContactShadows, Float, Grid, OrbitControls } from '@threlte/extras'
+  import { T, useFrame } from '@threlte/core'
+  import { Grid, OrbitControls } from '@threlte/extras'
+  import Model from '$lib/components/models/stacy.svelte'
+
+  let actions
+
+  // State variables for position and movement direction
+  let position = [0, 1, 0];
+  let moveDirection = { forward: 0, backward: 0, left: 0, right: 0 };
+
+  // Event handlers for W, A, S, D keys
+  function onKeyDown(e: KeyboardEvent) {
+    switch (e.key) {
+        case 'w':
+        case 'W':
+            moveDirection.forward = 1;
+            break;
+        case 's':
+        case 'S':
+            moveDirection.backward = 1;
+            break;
+        case 'a':
+        case 'A':
+            moveDirection.left = 1;
+            break;
+        case 'd':
+        case 'D':
+            moveDirection.right = 1;
+            break;
+    }
+  }
+
+  function onKeyUp(e: KeyboardEvent) {
+    switch (e.key) {
+        case 'w':
+        case 'W':
+            moveDirection.forward = 0;
+            break;
+        case 's':
+        case 'S':
+            moveDirection.backward = 0;
+            break;
+        case 'a':
+        case 'A':
+            moveDirection.left = 0;
+            break;
+        case 'd':
+        case 'D':
+            moveDirection.right = 0;
+            break;
+    }
+  }
+
+  // Update position of the GLB model based on movement direction
+  useFrame(() => {
+    if (moveDirection.forward) position[2] -= 0.1;
+    if (moveDirection.backward) position[2] += 0.1;
+    if (moveDirection.left) position[0] -= 0.1;
+    if (moveDirection.right) position[0] += 0.1;
+  });
+
+  $: {
+    console.log($actions)
+    $actions?.jump?.play()
+  }
 </script>
+
+<svelte:window on:keydown={onKeyDown} on:keyup={onKeyUp} />
 
 <T.PerspectiveCamera
   makeDefault
@@ -19,10 +84,10 @@
 
 <T.DirectionalLight
   intensity={0.8}
-  position.x={5}
-  position.y={10}
+  position.x={0}
+  position.y={1}
 />
-<T.AmbientLight intensity={0.2} />
+<T.AmbientLight intensity={0.5} />
 
 <Grid
   position.y={-0.001}
@@ -33,49 +98,7 @@
   cellSize={2}
 />
 
-<ContactShadows
-  scale={10}
-  blur={2}
-  far={2.5}
-  opacity={0.5}
+<Model 
+  bind:actions
+  {position}  
 />
-
-<Float
-  floatIntensity={1}
-  floatingRange={[0, 1]}
->
-  <T.Mesh
-    position.y={1.2}
-    position.z={-0.75}
-  >
-    <T.BoxGeometry />
-    <T.MeshStandardMaterial color="#0059BA" />
-  </T.Mesh>
-</Float>
-
-<Float
-  floatIntensity={1}
-  floatingRange={[0, 1]}
->
-  <T.Mesh
-    position={[1.2, 1.5, 0.75]}
-    rotation.x={5}
-    rotation.y={71}
-  >
-    <T.TorusKnotGeometry args={[0.5, 0.15, 100, 12, 2, 3]} />
-    <T.MeshStandardMaterial color="#F85122" />
-  </T.Mesh>
-</Float>
-
-<Float
-  floatIntensity={1}
-  floatingRange={[0, 1]}
->
-  <T.Mesh
-    position={[-1.4, 1.5, 0.75]}
-    rotation={[-5, 128, 10]}
-  >
-    <T.IcosahedronGeometry />
-    <T.MeshStandardMaterial color="#F8EBCE" />
-  </T.Mesh>
-</Float>
