@@ -1,7 +1,8 @@
 <script lang="ts">
   import { T, useFrame } from '@threlte/core'
   import { Grid, OrbitControls } from '@threlte/extras'
-  import Model from '$lib/components/models/stacy.svelte'
+  import Spiderman from '$lib/components/models/spiderman.svelte'
+  import Skyline from '$lib/components/models/skyline.svelte'
 
   let actions
 
@@ -62,7 +63,7 @@
 
   $: {
     console.log($actions)
-    $actions?.jump?.play()
+    $actions?.animation?.play()
   }
 </script>
 
@@ -70,14 +71,12 @@
 
 <T.PerspectiveCamera
   makeDefault
-  position={[-10, 10, 10]}
+  position={[-10, 2, 20]}
   fov={15}
 >
   <OrbitControls
-    autoRotate
     enableZoom={false}
     enableDamping
-    autoRotateSpeed={0.5}
     target.y={1.5}
   />
 </T.PerspectiveCamera>
@@ -98,7 +97,8 @@
   cellSize={2}
 />
 
-<Model 
+<Spiderman 
   bind:actions
   {position}  
 />
+<Skyline/>
