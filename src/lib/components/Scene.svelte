@@ -4,7 +4,7 @@
   import Spiderman from '$lib/components/models/spiderman.svelte'
   import Skyline from '$lib/components/models/skyline.svelte'
 
-  let actions
+  let actions: any
 
   // State variables for position and movement direction
   let position = [0, 1, 0];
